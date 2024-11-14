@@ -78,7 +78,7 @@ func (c *client) check() {
 
 		c.results = append(c.results, result)
 
-		if len(c.results) > 3600 {
+		if len(c.results) > 1000 {
 			c.results = c.results[1:]
 		}
 	}()
