@@ -25,16 +25,22 @@ func main() {
 	var timeout time.Duration
 	var method string
 	var body string
+	var username string
+	var password string
+	var token string
 
 	flag.StringVar(&configFile, "config", home+"/.httpmonitor.yaml", "The path to the configuration file.")
-	flag.StringVar(&url, "url", "", "The url to monitor.")
+	flag.StringVar(&url, "url", "", "The url of the target to monitor.")
 	flag.StringVar(&method, "method", http.MethodGet, "The HTTP method to use for the checks.")
 	flag.StringVar(&body, "body", "", "The body to send with the HTTP checks.")
+	flag.StringVar(&username, "username", "", "The username which should used, when the target requires basic authentication.")
+	flag.StringVar(&password, "password", "", "The password which should used, when the target requires basic authentication.")
+	flag.StringVar(&token, "token", "", "The token which should used, when the target requires token authentication.")
 	flag.DurationVar(&interval, "interval", 5*time.Second, "The interval to run the HTTP checks.")
 	flag.DurationVar(&timeout, "timeout", 2*time.Second, "The timeout for the HTTP checks.")
 	flag.Parse()
 
-	config, err := getConfig(configFile, url, method, body, interval, timeout)
+	config, err := getConfig(configFile, url, method, body, username, password, token, interval, timeout)
 	if err != nil {
 		log.Printf("Failed to load configuration: %#v", err)
 		os.Exit(1)
@@ -56,7 +62,7 @@ func main() {
 
 // If the url flag is set, the function will return a config with just the
 // target from the flag. Otherwise we will return the config from the file.
-func getConfig(file, url, method, body string, interval, timeout time.Duration) (*config.Config, error) {
+func getConfig(file, url, method, body, username, password, token string, interval, timeout time.Duration) (*config.Config, error) {
 	if url != "" {
 		return &config.Config{
 			Targets: []target.Config{{
@@ -64,6 +70,9 @@ func getConfig(file, url, method, body string, interval, timeout time.Duration) 
 				URL:      url,
 				Method:   method,
 				Body:     body,
+				Username: username,
+				Password: password,
+				Token:    token,
 				Interval: interval,
 				Timeout:  timeout,
 			}},

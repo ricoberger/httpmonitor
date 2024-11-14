@@ -34,19 +34,25 @@ Usage of httpmonitor:
         The interval to run the HTTP checks. (default 5s)
   -method string
         The HTTP method to use for the checks. (default "GET")
+  -password string
+        The password which should used, when the target requires basic authentication.
   -timeout duration
         The timeout for the HTTP checks. (default 2s)
+  -token string
+        The token which should used, when the target requires token authentication.
   -url string
-        The url to monitor.
+        The url of the target to monitor.
+  -username string
+        The username which should used, when the target requires basic authentication.
 ```
 
-To monitor a single url, the following command can be used:
+To monitor a single target, the following command can be used:
 
 ```sh
 httpmonitor -url https://example.com -interval 1s
 ```
 
-To monitor multiple urls, a configuration file can be used:
+To monitor multiple targets, a configuration file can be used:
 
 ```yaml
 targets:
