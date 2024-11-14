@@ -1,0 +1,28 @@
+---
+version: 2
+updates:
+  - package-ecosystem: "gomod"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    reviewers:
+      - "ricoberger"
+    assignees:
+      - "ricoberger"
+    groups:
+      gomod:
+        patterns:
+          - "*"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    reviewers:
+      - "ricoberger"
+    assignees:
+      - "ricoberger"
+    groups:
+      github-actions:
+        patterns:
+          - "*"
