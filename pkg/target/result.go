@@ -50,7 +50,12 @@ func (r *Result) End(t time.Time, statusCode int) {
 		return
 	}
 
-	r.ContentTransfer = r.transferDone.Sub(r.transferStart)
+	if statusCode == 0 && r.transferStart.IsZero() {
+		r.ContentTransfer = 0
+	} else {
+		r.ContentTransfer = r.transferDone.Sub(r.transferStart)
+	}
+
 	r.Total = r.transferDone.Sub(r.dnsStart)
 }
 
