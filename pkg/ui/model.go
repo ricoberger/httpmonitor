@@ -52,8 +52,10 @@ type Model struct {
 
 func NewModel(targets []target.Client) Model {
 	activeTargetIndex := -1
+	focusTargetsTable := true
 	if len(targets) == 1 {
 		activeTargetIndex = 0
+		focusTargetsTable = false
 	}
 
 	return Model{
@@ -71,7 +73,7 @@ func NewModel(targets []target.Client) Model {
 			table.NewFlexColumn("total", "Total", 20),
 			table.NewFlexColumn("status", "Status", 20),
 		}).
-			Focused(true).
+			Focused(focusTargetsTable).
 			HeaderStyle(lipgloss.NewStyle().Bold(true)).
 			HighlightStyle(lipgloss.NewStyle().Background(lipgloss.Color("12")).Foreground(lipgloss.Color("8"))).
 			Border(tableBorder).
@@ -87,7 +89,7 @@ func NewModel(targets []target.Client) Model {
 			table.NewFlexColumn("total", "Total", 20),
 			table.NewFlexColumn("status", "Status", 20),
 		}).
-			Focused(true).
+			Focused(!focusTargetsTable).
 			HeaderStyle(lipgloss.NewStyle().Bold(true)).
 			HighlightStyle(lipgloss.NewStyle().Background(lipgloss.Color("12")).Foreground(lipgloss.Color("8"))).
 			Border(tableBorder).
@@ -125,10 +127,14 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "enter":
 			if m.ActiveTargetIndex == -1 {
 				m.ActiveTargetIndex = m.TargetsTable.GetHighlightedRowIndex()
+				m.TargetsTable = m.TargetsTable.Focused(false)
+				m.ResultsTable = m.ResultsTable.Focused(true)
 			}
 		case "esc":
-			if len(m.Targets) > 1 {
+			if len(m.Targets) > 1 && m.ActiveTargetIndex != -1 {
 				m.ActiveTargetIndex = -1
+				m.TargetsTable = m.TargetsTable.Focused(true)
+				m.ResultsTable = m.ResultsTable.Focused(false)
 			}
 		}
 	case tea.WindowSizeMsg:
