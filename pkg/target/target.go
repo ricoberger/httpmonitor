@@ -2,23 +2,28 @@ package target
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"net/http"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/gen2brain/beeep"
 )
 
 type Config struct {
-	Name     string        `yaml:"name"`
-	URL      string        `yaml:"url"`
-	Method   string        `yaml:"method"`
-	Body     string        `yaml:"body"`
-	Username string        `yaml:"username"`
-	Password string        `yaml:"password"`
-	Token    string        `yaml:"token"`
-	Interval time.Duration `yaml:"interval"`
-	Timeout  time.Duration `yaml:"timeout"`
+	Name                  string        `yaml:"name"`
+	URL                   string        `yaml:"url"`
+	Method                string        `yaml:"method"`
+	Body                  string        `yaml:"body"`
+	Username              string        `yaml:"username"`
+	Password              string        `yaml:"password"`
+	Token                 string        `yaml:"token"`
+	Notification          bool          `yaml:"notification"`
+	NotificationThreshold time.Duration `yaml:"notificationThreshold"`
+	Interval              time.Duration `yaml:"interval"`
+	Timeout               time.Duration `yaml:"timeout"`
 }
 
 type Client interface {
@@ -72,6 +77,22 @@ func (c *client) check() {
 
 	defer func() {
 		result.End(time.Now(), statusCode)
+
+		if c.config.Notification {
+			if statusCode == 0 || statusCode >= 500 {
+				beeep.Notify(
+					"Check Failed",
+					fmt.Sprintf("Name: %s\nStatus Code: %d\nTotal: %s", c.config.Name, statusCode, result.Total.String()),
+					"",
+				)
+			} else if c.config.NotificationThreshold > 0 && result.Total > c.config.NotificationThreshold {
+				beeep.Notify(
+					"Check Above Threshold",
+					fmt.Sprintf("Name: %s\nStatus Code: %d\nTotal: %s", c.config.Name, statusCode, result.Total.String()),
+					"",
+				)
+			}
+		}
 
 		c.resultsMutex.Lock()
 		defer c.resultsMutex.Unlock()

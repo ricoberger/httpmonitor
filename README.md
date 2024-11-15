@@ -34,6 +34,10 @@ Usage of httpmonitor:
         The interval to run the HTTP checks. (default 5s)
   -method string
         The HTTP method to use for the checks. (default "GET")
+  -notification
+        Enable desktop notifications, for failed checks.
+  -notification-threshold duration
+        Enable desktop notifications, for checkes which are longer than the threshold.
   -password string
         The password which should used, when the target requires basic authentication.
   -timeout duration
@@ -63,6 +67,8 @@ targets:
     username:
     password:
     token:
+    notification:
+    notificationThreshold:
     interval: 5s
     timeout: 5s
 ```
