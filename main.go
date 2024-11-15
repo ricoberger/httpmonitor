@@ -28,6 +28,8 @@ func main() {
 	var username string
 	var password string
 	var token string
+	var notification bool
+	var notificationThreshold time.Duration
 
 	flag.StringVar(&configFile, "config", home+"/.httpmonitor.yaml", "The path to the configuration file.")
 	flag.StringVar(&url, "url", "", "The url of the target to monitor.")
@@ -36,11 +38,13 @@ func main() {
 	flag.StringVar(&username, "username", "", "The username which should used, when the target requires basic authentication.")
 	flag.StringVar(&password, "password", "", "The password which should used, when the target requires basic authentication.")
 	flag.StringVar(&token, "token", "", "The token which should used, when the target requires token authentication.")
+	flag.BoolVar(&notification, "notification", false, "Enable desktop notifications, for failed checks.")
+	flag.DurationVar(&notificationThreshold, "notification-threshold", 0*time.Second, "Enable desktop notifications, for checkes which are longer than the threshold.")
 	flag.DurationVar(&interval, "interval", 5*time.Second, "The interval to run the HTTP checks.")
 	flag.DurationVar(&timeout, "timeout", 2*time.Second, "The timeout for the HTTP checks.")
 	flag.Parse()
 
-	config, err := getConfig(configFile, url, method, body, username, password, token, interval, timeout)
+	config, err := getConfig(configFile, url, method, body, username, password, token, notification, notificationThreshold, interval, timeout)
 	if err != nil {
 		log.Printf("Failed to load configuration: %#v", err)
 		os.Exit(1)
@@ -62,19 +66,21 @@ func main() {
 
 // If the url flag is set, the function will return a config with just the
 // target from the flag. Otherwise we will return the config from the file.
-func getConfig(file, url, method, body, username, password, token string, interval, timeout time.Duration) (*config.Config, error) {
+func getConfig(file, url, method, body, username, password, token string, notification bool, notificationThreshold, interval, timeout time.Duration) (*config.Config, error) {
 	if url != "" {
 		return &config.Config{
 			Targets: []target.Config{{
-				Name:     url,
-				URL:      url,
-				Method:   method,
-				Body:     body,
-				Username: username,
-				Password: password,
-				Token:    token,
-				Interval: interval,
-				Timeout:  timeout,
+				Name:                  url,
+				URL:                   url,
+				Method:                method,
+				Body:                  body,
+				Username:              username,
+				Password:              password,
+				Token:                 token,
+				Notification:          notification,
+				NotificationThreshold: notificationThreshold,
+				Interval:              interval,
+				Timeout:               timeout,
 			}},
 		}, nil
 	}
