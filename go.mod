@@ -3,11 +3,11 @@ module github.com/ricoberger/httpmonitor
 go 1.23.2
 
 require (
-	github.com/charmbracelet/bubbletea v1.2.2
+	github.com/charmbracelet/bubbletea v1.2.4
 	github.com/charmbracelet/lipgloss v1.0.0
 	github.com/evertras/bubble-table v0.17.1
 	github.com/gen2brain/beeep v0.0.0-20240516210008-9c006672e7f4
-	github.com/goccy/go-yaml v1.14.1
+	github.com/goccy/go-yaml v1.15.4
 )
 
 require (
