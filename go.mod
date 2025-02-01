@@ -7,7 +7,7 @@ require (
 	github.com/charmbracelet/lipgloss v1.0.0
 	github.com/evertras/bubble-table v0.17.1
 	github.com/gen2brain/beeep v0.0.0-20240516210008-9c006672e7f4
-	github.com/goccy/go-yaml v1.15.13
+	github.com/goccy/go-yaml v1.15.16
 )
 
 require (
