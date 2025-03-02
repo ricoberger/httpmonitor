@@ -1,6 +1,6 @@
 module github.com/ricoberger/httpmonitor
 
-go 1.23.2
+go 1.24.0
 
 require (
 	github.com/charmbracelet/bubbletea v1.3.4
