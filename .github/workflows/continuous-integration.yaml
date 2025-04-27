@@ -3,6 +3,11 @@ name: Continuous Integration
 
 on:
   push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   go:
@@ -20,6 +25,13 @@ jobs:
           go-version-file: go.mod
           cache: true
           cache-dependency-path: go.sum
+
+      - name: Lint
+        uses: golangci/golangci-lint-action@v7
+
+      - name: Test
+        run: |
+          go test ./...
 
       - name: Build
         run: |
