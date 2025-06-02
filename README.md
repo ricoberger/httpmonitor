@@ -37,7 +37,7 @@ Usage of httpmonitor:
   -notification
         Enable desktop notifications, for failed checks.
   -notification-threshold duration
-        Enable desktop notifications, for checkes which are longer than the threshold.
+        Enable desktop notifications, for checks which are longer than the threshold.
   -password string
         The password which should used, when the target requires basic authentication.
   -timeout duration
