@@ -39,7 +39,7 @@ func main() {
 	flag.StringVar(&password, "password", "", "The password which should used, when the target requires basic authentication.")
 	flag.StringVar(&token, "token", "", "The token which should used, when the target requires token authentication.")
 	flag.BoolVar(&notification, "notification", false, "Enable desktop notifications, for failed checks.")
-	flag.DurationVar(&notificationThreshold, "notification-threshold", 0*time.Second, "Enable desktop notifications, for checkes which are longer than the threshold.")
+	flag.DurationVar(&notificationThreshold, "notification-threshold", 0*time.Second, "Enable desktop notifications, for checks which are longer than the threshold.")
 	flag.DurationVar(&interval, "interval", 5*time.Second, "The interval to run the HTTP checks.")
 	flag.DurationVar(&timeout, "timeout", 2*time.Second, "The timeout for the HTTP checks.")
 	flag.Parse()
