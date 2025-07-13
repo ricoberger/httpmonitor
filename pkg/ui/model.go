@@ -130,7 +130,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.TargetsTable = m.TargetsTable.Focused(false)
 				m.ResultsTable = m.ResultsTable.Focused(true)
 			}
-		case "esc":
+		case "esc", "left":
 			if len(m.Targets) > 1 && m.ActiveTargetIndex != -1 {
 				m.ActiveTargetIndex = -1
 				m.TargetsTable = m.TargetsTable.Focused(true)
