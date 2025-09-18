@@ -1,6 +1,7 @@
 # httpmonitor
 
-`httpmonitor` is a small TUI application to monitor a single or multiple targets.
+`httpmonitor` is a small TUI application to monitor a single or multiple
+targets.
 
 ![Overview](.github/assets/overview.png)
 
@@ -10,7 +11,8 @@
 
 ### Releases
 
-Check the [releases](https://github.com/ricoberger/httpmonitor/releases) page for the full list of pre-built binaries.
+Check the [releases](https://github.com/ricoberger/httpmonitor/releases) page
+for the full list of pre-built binaries.
 
 1. Download the release for your os/arch
 2. Unzip to archive to get the `httpmonitor` binary
@@ -30,6 +32,8 @@ Usage of httpmonitor:
         The body to send with the HTTP checks.
   -config string
         The path to the configuration file. (default "/Users/ricoberger/.httpmonitor.yaml")
+  -insecure
+        Skip TLS certificate verification.
   -interval duration
         The interval to run the HTTP checks. (default 5s)
   -method string
@@ -67,6 +71,7 @@ targets:
     username:
     password:
     token:
+    insecure: false
     notification:
     notificationThreshold:
     interval: 5s

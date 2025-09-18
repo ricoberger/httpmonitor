@@ -20,6 +20,7 @@ type Config struct {
 	Username              string        `yaml:"username"`
 	Password              string        `yaml:"password"`
 	Token                 string        `yaml:"token"`
+	Insecure              bool          `yaml:"insecure"`
 	Notification          bool          `yaml:"notification"`
 	NotificationThreshold time.Duration `yaml:"notificationThreshold"`
 	Interval              time.Duration `yaml:"interval"`
@@ -133,27 +134,10 @@ func (c *client) check() {
 }
 
 func NewClient(config Config) Client {
-	roundTripper := DefaultRoundTripper
-
-	if config.Username != "" && config.Password != "" {
-		roundTripper = BasicAuthTransport{
-			Transport: roundTripper,
-			Username:  config.Username,
-			Password:  config.Password,
-		}
-	}
-
-	if config.Token != "" {
-		roundTripper = TokenAuthTransporter{
-			Transport: roundTripper,
-			Token:     config.Token,
-		}
-	}
-
 	return &client{
 		config: config,
 		httpClient: &http.Client{
-			Transport: roundTripper,
+			Transport: getRoundTripper(config),
 		},
 	}
 }
