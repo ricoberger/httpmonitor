@@ -1,13 +1,32 @@
 package target
 
 import (
+	"crypto/tls"
 	"net/http"
 )
 
-// DefaultRoundTripper is our default RoundTripper.
-var DefaultRoundTripper http.RoundTripper = &http.Transport{
-	Proxy:             http.ProxyFromEnvironment,
-	DisableKeepAlives: true,
+func getRoundTripper(c Config) http.RoundTripper {
+	var roundTripper http.RoundTripper = &http.Transport{
+		Proxy:             http.ProxyFromEnvironment,
+		DisableKeepAlives: true,
+		//nolint:gosec
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: c.Insecure},
+	}
+
+	if c.Username != "" && c.Password != "" {
+		roundTripper = BasicAuthTransport{
+			Transport: roundTripper,
+			Username:  c.Username,
+			Password:  c.Password,
+		}
+	} else if c.Token != "" {
+		roundTripper = TokenAuthTransporter{
+			Transport: roundTripper,
+			Token:     c.Token,
+		}
+	}
+
+	return roundTripper
 }
 
 // BasicAuthTransport is the struct to add basic auth to a RoundTripper.
