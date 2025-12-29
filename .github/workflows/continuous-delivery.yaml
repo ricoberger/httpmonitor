@@ -6,30 +6,51 @@ on:
     tags:
       - "v*"
 
-permissions:
-  contents: write
+permissions: read-all
 
 jobs:
-  release:
+  binaries:
     name: Binaries
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    strategy:
+      matrix:
+        platform:
+          [
+            { os: "darwin", arch: "amd64" },
+            { os: "darwin", arch: "arm64" },
+            { os: "linux", arch: "amd64" },
+            { os: "linux", arch: "arm64" },
+            { os: "windows", arch: "amd64" },
+            { os: "windows", arch: "arm64" },
+          ]
     steps:
       - name: Checkout
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
-      - name: Setup
+      - name: Setup Go
         uses: actions/setup-go@v6
         with:
           go-version-file: go.mod
           cache: true
           cache-dependency-path: go.sum
 
-      - uses: goreleaser/goreleaser-action@v6
-        with:
-          distribution: goreleaser
-          version: latest
-          args: release --clean --verbose
+      - name: Install Dependencies
+        run: |
+          go mod download
+
+      - name: Build
+        run: |
+          GOOS="${{ matrix.platform.os }}" GOARCH="${{ matrix.platform.arch }}" go build -o ./bin/httpmonitor .
+
+          cd ./bin
+          tar -czf httpmonitor-${{ matrix.platform.os }}-${{ matrix.platform.arch }}.tar.gz httpmonitor
+
+      - name: Upload Artifact
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload ${{ github.ref_name }} ./bin/httpmonitor-${{ matrix.platform.os }}-${{ matrix.platform.arch }}.tar.gz
