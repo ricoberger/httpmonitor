@@ -86,11 +86,3 @@ To build and run the binary the following commands can be used:
 go build -o ./bin/httpmonitor .
 ./bin/httpmonitor
 ```
-
-To publish a new version, a new tag must be created and pushed:
-
-```sh
-make release-patch
-make release-minor
-make release-major
-```
