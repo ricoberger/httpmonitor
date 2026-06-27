@@ -6,8 +6,8 @@ import (
 
 	"github.com/ricoberger/httpmonitor/pkg/target"
 
-	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
+	tea "charm.land/bubbletea/v2"
+	"charm.land/lipgloss/v2"
 	"github.com/evertras/bubble-table/table"
 )
 
@@ -50,7 +50,7 @@ type Model struct {
 	ResultsTable table.Model
 }
 
-func NewModel(targets []target.Client) Model {
+func NewModel(targets []target.Client) tea.Model {
 	activeTargetIndex := -1
 	focusTargetsTable := true
 	if len(targets) == 1 {
@@ -58,7 +58,7 @@ func NewModel(targets []target.Client) Model {
 		focusTargetsTable = false
 	}
 
-	return Model{
+	return &Model{
 		ScreenWidth:       0,
 		ScreenHeight:      0,
 		ActiveTargetIndex: activeTargetIndex,
@@ -99,7 +99,7 @@ func NewModel(targets []target.Client) Model {
 }
 
 func (m Model) Init() tea.Cmd {
-	return tea.Batch(tea.EnterAltScreen, tickEvery())
+	return tickEvery()
 }
 
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -120,7 +120,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	}
 
 	switch msg := msg.(type) {
-	case tea.KeyMsg:
+	case tea.KeyPressMsg:
 		switch msg.String() {
 		case "ctrl+c", "q":
 			cmds = append(cmds, tea.Quit)
@@ -156,16 +156,22 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, tea.Batch(cmds...)
 }
 
-func (m Model) View() string {
-	if m.ScreenWidth == 0 || m.ScreenHeight == 0 {
-		return "Loading..."
+func (m Model) View() tea.View {
+	var content string
+
+	switch {
+	case m.ScreenWidth == 0 || m.ScreenHeight == 0:
+		content = "Loading..."
+	case m.ActiveTargetIndex == -1:
+		content = m.TargetsTable.View()
+	default:
+		content = m.ResultsTable.View()
 	}
 
-	if m.ActiveTargetIndex == -1 {
-		return m.TargetsTable.View()
-	}
+	v := tea.NewView(content)
+	v.AltScreen = true
 
-	return m.ResultsTable.View()
+	return v
 }
 
 func (m *Model) generateTargetsTableRows() []table.Row {
