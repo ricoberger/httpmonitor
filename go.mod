@@ -1,6 +1,6 @@
 module github.com/ricoberger/httpmonitor
 
-go 1.26.5
+go 1.27.2
 
 require (
 	charm.land/bubbletea/v2 v2.0.10
